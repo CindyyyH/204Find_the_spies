@@ -19,7 +19,7 @@ class TaskSuccess:
         self.round_num = round_num
     
     def __repr__(self):
-        return f"Ki{self.round_num}"
+        return f"K_i{self.round_num}"
 
 #M_ij: In task ‘i’, True if player ‘j’ votes to accept, False if player ‘j’ votes to reject.
 @proposition(E)
@@ -51,68 +51,38 @@ class PlayerGoodness:
         return f"G{self.player_name}"
 
 # Call your variables whatever you want
-a = BasicPropositions("a")
-b = BasicPropositions("b")   
-c = BasicPropositions("c")
-d = BasicPropositions("d")
-e = BasicPropositions("e")
-# At least one of these will be true
-x = FancyPropositions("x")
-y = FancyPropositions("y")
-z = FancyPropositions("z")
+# Basic Propositions for players
+    alice = BasicPropositions("a")  
+    bob = BasicPropositions("b")    
+    chris = BasicPropositions("c")   
+    david = BasicPropositions("d")   
+    eric = BasicPropositions("e")   
+    
+    # Round being played
+    Pi = FancyPropositions("Pi")
+    
+    # Task result (successful or not)
+    Ki = FancyPropositions("Ki")
+    
+    # Suspicion of player being a spy
+    Sa = FancyPropositions("Sa")
+    Sb = FancyPropositions("Sb")
+    Sc = FancyPropositions("Sc")
+    Sd = FancyPropositions("Sd")
+    Se = FancyPropositions("Se")
+    
+    # Player identified as a spy
+    Da = FancyPropositions("Da")
+    Db = FancyPropositions("Db")
+    Dc = FancyPropositions("Dc")
+    Dd = FancyPropositions("Dd")
+    De = FancyPropositions("De")
 
 # Build an example full theory for your setting and return it.
 #
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
-
-@constraint.at_least_one(E)
-def attendance_constraint(round_num):
-    #Constraint to ensure correct player attendance based on round number.
-    # Odd rounds: 3 players
-    if round_num % 2 == 1:
-        players_combinations = list(combinations(players, 3))
-    # Even rounds: 2 players
-    else:
-        players_combinations = list(combinations(players, 2))
-    
-    combined_constraints = []
-    for combo in players_combinations:
-        current_constraint = PlayerAttendance(round_num, combo[0])
-        for player in combo[1:]:
-            current_constraint &= PlayerAttendance(round_num, player)
-        combined_constraints.append(current_constraint)
-    
-    return combined_constraints
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
