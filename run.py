@@ -69,7 +69,7 @@ z = FancyPropositions("z")
 
 @constraint.at_least_one(E)
 def attendance_constraint(round_num):
-    """Constraint to ensure correct player attendance based on round number."""
+    #Constraint to ensure correct player attendance based on round number.
     # Odd rounds: 3 players
     if round_num % 2 == 1:
         players_combinations = list(combinations(players, 3))
