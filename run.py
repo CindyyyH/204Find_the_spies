@@ -95,12 +95,12 @@ def example_theory():
             j1 = players[indexes[0]]
             j2 = players[indexes[1]] 
             j3 = players[indexes[2]]
-            E.add_constraint((Ri(j1) & Ri(j2) & Ri(j3)))
+            E.add_constraint((PlayerAttendance(round_num[],player_name[j1]) & PlayerAttendance(round_num[],player_name[j2]) & PlayerAttendance(round_num[],player_name[j3]))
         else:
             indexes = random.sample(range(5), 2)
             j4 = players[indexes[0]]
             j5 = players[indexes[1]] 
-            E.add_constraint(Ri(j4) & Ri(j5))
+            E.add_constraint(PlayerAttendance(round_num[],player_name[j4]) & PlayerAttendance(round_num[],player_name[j5]))
     
     # The success of the task requires the acceptance of all members participating in the task
     E.add_constraint((Mij(j) & Mij(j) & Mij(j)) >> Ki(i))
