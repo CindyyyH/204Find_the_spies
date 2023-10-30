@@ -92,11 +92,11 @@ def example_theory():
             E.add_constraint(Ri(j) & Ri(j))
     
     # The success of the task requires the acceptance of all members participating in the task
-    E.add_constraint((Mij(j) & Mij(j) & Mij(j)) >> Ki)
-    E.add_constraint((Mij(j) & Mij(j)) >> Ki)
+    E.add_constraint((Mij(j) & Mij(j) & Mij(j)) >> Ki(i))
+    E.add_constraint((Mij(j) & Mij(j)) >> Ki(i))
     
     # Failure of the task means that there must be a spy among the members participating in the task
-    E.add_constraint(~Ki >> (~Mij(j) | ~Mij(j) | ~Mij(j)))
+    E.add_constraint(~Ki(i) >> (~Mij(j) | ~Mij(j) | ~Mij(j)))
 
     # Good people can only vote for acceptance.
     E.add_constraint(Gj(j) & Mij(j))
@@ -106,6 +106,23 @@ def example_theory():
 
     # No one can participate in more than two tasks in a row
     E.add_constraint(~(Ri(j) & Ri_plus_1(j=j, i_plus_1=i+1) & Ri_plus_2(j=j, i_plus_2=i+2)))
+
+    # The spy cannot vote “accept” two consecutive rounds of task
+    E.add_constraint(~Gj(j) >> ~(Mij(j) & Mi_plus_1j(j=j, i_plus_1=i+1)))
+
+    # If player ‘j’ has been identified as a spy, player j can not attend the following task.
+    E.add_constraint(~(Dj(j) & Pi_plus_1(i_plus_1=i+1)))
+
+    # If the task the player is on fails, they will be suspected
+    E.add_constraint((~Ki(i) & Ri(j)) >> Sj(j))
+
+    # Suspect identified as a good guy, no longer suspected after three consecutive successful tasks
+    E.add_constraint(Sj(j)& Ki(i) & Ki_plus_1(i+1) & Ki_plus_2(i+2) >> Gj(j)) 
+    
+    # If the suspect is included in the voting in the next round, but the result of this round of voting is mission success, then this suspect will be temporarily cleared of suspicion
+    E.add_constraint((Ki_plus_1(i_plus_1=i+1) & Ri_plus_1(j=j, i_plus_1=i+1)) >> ~Sj(j))
+    
+    
     
 
 
