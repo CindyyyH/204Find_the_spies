@@ -84,12 +84,22 @@ class Spy:
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
+MAX_ROUNDS = 1000
+
+
 def example_theory():
     for i in range(1, MAX_ROUNDS + 1):
         if i % 2 == 1:
-            E.add_constraint(Ri(j) & Ri(j) | (Ri(j) & Ri(j) & Ri(j)))
+            indexes = random.sample(range(5), 3)
+            j1 = players[indexes[0]]
+            j2 = players[indexes[1]] 
+            j3 = players[indexes[2]]
+            E.add_constraint((Ri(j1) & Ri(j2) & Ri(j3)))
         else:
-            E.add_constraint(Ri(j) & Ri(j))
+            indexes = random.sample(range(5), 2)
+            j4 = players[indexes[0]]
+            j5 = players[indexes[1]] 
+            E.add_constraint(Ri(j4) & Ri(j5))
     
     # The success of the task requires the acceptance of all members participating in the task
     E.add_constraint((Mij(j) & Mij(j) & Mij(j)) >> Ki(i))
