@@ -111,6 +111,35 @@ class Spy:
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
+def example_theory():
+    for i in range(1, MAX_ROUNDS + 1):
+        if i % 2 == 1:
+            E.add_constraint(Ri(j) & Ri(j) | (Ri(j) & Ri(j) & Ri(j)))
+        else:
+            E.add_constraint(Ri(j) & Ri(j))
+    
+    # The success of the task requires the acceptance of all members participating in the task
+    E.add_constraint((Mij(j) & Mij(j) & Mij(j)) >> Ki)
+    E.add_constraint((Mij(j) & Mij(j)) >> Ki)
+    
+    # Failure of the task means that there must be a spy among the members participating in the task
+    E.add_constraint(~Ki >> (~Mij(j) | ~Mij(j) | ~Mij(j)))
+
+    # Good people can only vote for acceptance.
+    E.add_constraint(Gj(j) & Mij(j))
+
+    # Spies can vote to accept or reject.
+    E.add_constraint((~Gj(j) & Mij(j)) | (~Gj(j) & ~Mij(j)))
+
+    # No one can participate in more than two tasks in a row
+    E.add_constraint(~(Ri(j) & Ri_plus_1(j=j, i_plus_1=i+1) & Ri_plus_2(j=j, i_plus_2=i+2)))
+    
+
+
+
+
+
+
 
 
 
