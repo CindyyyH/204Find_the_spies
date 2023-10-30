@@ -1,7 +1,7 @@
 
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
-
+import random
 # These two lines make sure a faster SAT solver is used.
 from nnf import config
 config.sat_backend = "kissat"
@@ -9,7 +9,7 @@ config.sat_backend = "kissat"
 # Encoding that will store all of your constraints
 E = Encoding()
 
-players = ["Alice", "Bob", "Chris", "David", "Eric"]
+
 
 # Creating propositions that represent the state of a task for a particular player in a particular round
 #K_i: True if task round ‘i’ succeeds, False if task round ‘i’ fails；
@@ -84,8 +84,9 @@ class Spy:
 #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
+player_name = ["Alice", "Bob", "Chris", "David", "Eric"]
 MAX_ROUNDS = 1000
-
+round_num = 0
 
 def example_theory():
     for i in range(1, MAX_ROUNDS + 1):
