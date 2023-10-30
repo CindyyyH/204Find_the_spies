@@ -78,33 +78,6 @@ class Spy:
         return f"D{self.player_name}"
 
 
-# Call your variables whatever you want
-# Basic Propositions for players
-    alice = BasicPropositions("a")  
-    bob = BasicPropositions("b")    
-    chris = BasicPropositions("c")   
-    david = BasicPropositions("d")   
-    eric = BasicPropositions("e")   
-    
-    # Round being played
-    Pi = FancyPropositions("Pi")
-    
-    # Task result (successful or not)
-    Ki = FancyPropositions("Ki")
-    
-    # Suspicion of player being a spy
-    Sa = FancyPropositions("Sa")
-    Sb = FancyPropositions("Sb")
-    Sc = FancyPropositions("Sc")
-    Sd = FancyPropositions("Sd")
-    Se = FancyPropositions("Se")
-    
-    # Player identified as a spy
-    Da = FancyPropositions("Da")
-    Db = FancyPropositions("Db")
-    Dc = FancyPropositions("Dc")
-    Dd = FancyPropositions("Dd")
-    De = FancyPropositions("De")
 
 # Build an example full theory for your setting and return it.
 #
