@@ -49,6 +49,34 @@ class PlayerGoodness:
 
     def __repr__(self):
         return f"G{self.player_name}"
+        
+#Pi: round ‘i’ is playing.
+@proposition(E)
+class Current_round:
+    def __init__(self, round_num):
+        self.round_num = round_num
+
+    def __repr__(self):
+        return f"P{self.round_num}"
+
+#Sj: Represents suspicion that a player with the name "name" is a spy.
+@proposition(E)
+class Suspicion:
+    def __init__(self, player_name):
+        self.player_name = player_name
+
+    def __repr__(self):
+        return f"S{self.player_name}"
+    
+#Dj: player ‘j’ has been identified as a spy.
+@proposition(E)
+class Spy:
+    def __init__(self, player_name):
+        self.player_name = player_name
+
+    def __repr__(self):
+        return f"D{self.player_name}"
+
 
 # Call your variables whatever you want
 # Basic Propositions for players
