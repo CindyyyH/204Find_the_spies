@@ -110,10 +110,10 @@ def example_theory():
     E.add_constraint(~Ki(i) >> (~Mij(j) | ~Mij(j) | ~Mij(j)))
 
     # Good people can only vote for acceptance.
-    E.add_constraint(Gj(j) & Mij(j))
+    E.add_constraint(Gj(j) >> Mij(j))
 
     # Spies can vote to accept or reject.
-    E.add_constraint((~Gj(j) & Mij(j)) | (~Gj(j) & ~Mij(j)))
+    E.add_constraint((~Gj(j) >> Mij(j)) | (~Gj(j) >> ~Mij(j)))
 
     # No one can participate in more than two tasks in a row
     E.add_constraint(~(Ri(j) & Ri_plus_1(j=j, i_plus_1=i+1) & Ri_plus_2(j=j, i_plus_2=i+2)))
