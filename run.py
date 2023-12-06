@@ -161,19 +161,6 @@ def example_theory():
             j4 = player_names[indexes[0]]
             j5 = player_names[indexes[1]]
             E.add_constraint(PlayerAttendance(i, j4) & PlayerAttendance(i, j5))
-         def example_theory():
-    for i in range(1, rounds + 1):
-        if i % 2 == 1:
-            participants = [Alice, Bob, Chris]
-            E.add_constraint((Rij(Alice, i) & Rij(Bob, i)) | (Rij(Alice, i) & Rij(Bob, i) & Rij(Chris, i)))
-        else:
-            participants = random.sample(player_names, 2)
-            E.add_constraint(Rij(Alice, i) & Rij(Bob, i))
-            
-        # The success of the task requires the acceptance of all members participating in the task
-        E.add_constraint((Mij(Alice, i) & Mij(Bob, i) & Mij(Chris, i)) >> Ki(i) | (Mij(Alice, i) & Mij(Bob, i)) >> Ki(i))
-        # Failure of the task means that there must be a spy among the members participating in the task
-        E.add_constraint(~Ki(i) >> ~Mij(Alice, i) | ~Mij(Bob, i) | ~Mij(Chris, i))
 
         for j in player_names:
             # Good people can only vote for acceptance.
