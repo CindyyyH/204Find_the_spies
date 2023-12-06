@@ -180,6 +180,7 @@ def example_theory():
         # If the number of suspects is the same, one person will be randomly selected to vote.
         if i == 18:
             E.add_constraint(~(Gj(j) & Gj(j + 1)) >> (Vij(j, i) & Vij(j + 1, i)) >> F)
+
 if __name__ == "__main__":
 
     T = example_theory()
