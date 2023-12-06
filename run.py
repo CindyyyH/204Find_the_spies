@@ -139,75 +139,37 @@ for i in range(1, rounds + 1):      # i = 第几轮
 
 
 
-# # Build an example full theory for your setting and return it.
-# #
-# #  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
-# #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
-# #  what the expectations are.
-# player_name = ["Alice", "Bob", "Chris", "David", "Eric"]
-# MAX_ROUNDS = 1000
-# round_num = i
+# Build an example full theory for your setting and return it.
+#  There should be at least 10 variables, and a sufficiently large formula to describe it (>50 operators).
+#  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
+#  what the expectations are.
 
-# def example_theory():
-#     for i in range(1, MAX_ROUNDS + 1):
-#         if i % 2 == 1:
-#             indexes = random.sample(range(5), 3)
-#             j1 = players[indexes[0]]
-#             j2 = players[indexes[1]] 
-#             j3 = players[indexes[2]]
-#             E.add_constraint((R(round_num[i],player_name[j1]) & R(round_num[i],player_name[j2]) & R(round_num[i],player_name[j3]))
-#         else:
-#             indexes = random.sample(range(5), 2)
-#             j4 = players[indexes[0]]
-#             j5 = players[indexes[1]] 
-#             E.add_constraint(R(round_num[i],player_name[j4]) & R(round_num[i],player_name[j5]))
-    
-#     # The success of the task requires the acceptance of all members participating in the task
-#     E.add_constraint((Mij(j) & Mij(j) & Mij(j)) >> Ki(i))
-#     E.add_constraint((Mij(j) & Mij(j)) >> Ki(i))
-    
-#     # Failure of the task means that there must be a spy among the members participating in the task
-#     E.add_constraint(~Ki(i) >> (~Mij(j) | ~Mij(j) | ~Mij(j)))
+player_name = ["Alice", "Bob", "Chris", "David", "Eric"]
+MAX_ROUNDS = 18
+round_num = i
 
-#     # Good people can only vote for acceptance.
-#     E.add_constraint(Gj(j) >> Mij(j))
-
-#     # Spies can vote to accept or reject.
-#     E.add_constraint((~Gj(j) >> Mij(j)) | (~Gj(j) >> ~Mij(j)))
-
-#     # No one can participate in more than two tasks in a row
-#     E.add_constraint(~(Ri(j) & Ri_plus_1(j=j, i_plus_1=i+1) & Ri_plus_2(j=j, i_plus_2=i+2)))
-
-#     # The spy cannot vote “accept” two consecutive rounds of task
-#     E.add_constraint(~Gj(j) >> ~(Mij(j) & Mi_plus_1j(j=j, i_plus_1=i+1)))
-
-#     # If player ‘j’ has been identified as a spy, player j can not attend the following task.
-#     E.add_constraint(~(Dj(j) & Pi_plus_1(i_plus_1=i+1)))
-
-#     # If the task the player is on fails, they will be suspected
-#     E.add_constraint((~Ki(i) & Ri(j)) >> Sj(j))
-
-#     # Suspect identified as a good guy, no longer suspected after three consecutive successful tasks
-#     E.add_constraint(Sj(j)& Ki(i) & Ki_plus_1(i+1) & Ki_plus_2(i+2) >> Gj(j)) 
-    
-#     # If the suspect is included in the voting in the next round, but the result of this round of voting is mission success, then this suspect will be temporarily cleared of suspicion
-#     E.add_constraint((Ki_plus_1(i_plus_1=i+1) & Ri_plus_1(j=j, i_plus_1=i+1)) >> ~Sj(j))
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
+def example_theory():
+    for i in range(1, rounds + 1):
+        if i % 2 == 1:
+            indexes = random.sample(range(len(player_names)), 3)
+            j1 = player_names[indexes[0]]
+            j2 = player_names[indexes[1]]
+            j3 = player_names[indexes[2]]
+            E.add_constraint((PlayerAttendance(i, j1) & PlayerAttendance(i, j2) & PlayerAttendance(i, j3)))
+        else:
+            indexes = random.sample(range(len(player_names)), 2)
+            j4 = player_names[indexes[0]]
+            j5 = player_names[indexes[1]]
+            E.add_constraint(PlayerAttendance(i, j4) & PlayerAttendance(i, j5))
+         for j in player_names:
+            E.add_constraint(PlayerGoodness(j) >> PlayerVote(i, j))
+            E.add_constraint((~PlayerGoodness(j) >> PlayerVote(i, j)) | (~PlayerGoodness(j) >> ~PlayerVote(i, j)))
+            E.add_constraint(~(PlayerAttendance(i, j) & PlayerAttendance(i + 1, j) & PlayerAttendance(i + 2, j)))
+            E.add_constraint(~PlayerGoodness(j) >> ~(PlayerVote(i, j) & PlayerVote(i + 1, j)))
+            E.add_constraint(~(Spy(j) & Current_round(i)) >> ~PlayerAttendance(i + 1, j))
+            E.add_constraint((~TaskSuccess(i) & PlayerAttendance(i, j)) >> Suspicion(j))
+            E.add_constraint(Suspicion(j) & TaskSuccess(i) & TaskSuccess(i + 1) & TaskSuccess(i + 2) >> PlayerGoodness(j))
+            E.add_constraint((Current_round(i + 1) & PlayerAttendance(i + 1, j)) >> ~Suspicion(j))
 
 if __name__ == "__main__":
 
