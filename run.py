@@ -161,16 +161,38 @@ def example_theory():
             j4 = player_names[indexes[0]]
             j5 = player_names[indexes[1]]
             E.add_constraint(PlayerAttendance(i, j4) & PlayerAttendance(i, j5))
-         for j in player_names:
-            E.add_constraint(PlayerGoodness(j) >> PlayerVote(i, j))
-            E.add_constraint((~PlayerGoodness(j) >> PlayerVote(i, j)) | (~PlayerGoodness(j) >> ~PlayerVote(i, j)))
-            E.add_constraint(~(PlayerAttendance(i, j) & PlayerAttendance(i + 1, j) & PlayerAttendance(i + 2, j)))
-            E.add_constraint(~PlayerGoodness(j) >> ~(PlayerVote(i, j) & PlayerVote(i + 1, j)))
-            E.add_constraint(~(Spy(j) & Current_round(i)) >> ~PlayerAttendance(i + 1, j))
-            E.add_constraint((~TaskSuccess(i) & PlayerAttendance(i, j)) >> Suspicion(j))
-            E.add_constraint(Suspicion(j) & TaskSuccess(i) & TaskSuccess(i + 1) & TaskSuccess(i + 2) >> PlayerGoodness(j))
-            E.add_constraint((Current_round(i + 1) & PlayerAttendance(i + 1, j)) >> ~Suspicion(j))
+         def example_theory():
+    for i in range(1, rounds + 1):
+        if i % 2 == 1:
+            participants = [Alice, Bob, Chris]
+            E.add_constraint((Rij(Alice, i) & Rij(Bob, i)) | (Rij(Alice, i) & Rij(Bob, i) & Rij(Chris, i)))
+        else:
+            participants = random.sample(player_names, 2)
+            E.add_constraint(Rij(Alice, i) & Rij(Bob, i))
+            
+        # The success of the task requires the acceptance of all members participating in the task
+        E.add_constraint((Mij(Alice, i) & Mij(Bob, i) & Mij(Chris, i)) >> Ki(i) | (Mij(Alice, i) & Mij(Bob, i)) >> Ki(i))
+        # Failure of the task means that there must be a spy among the members participating in the task
+        E.add_constraint(~Ki(i) >> ~Mij(Alice, i) | ~Mij(Bob, i) | ~Mij(Chris, i))
 
+        for j in player_names:
+            # Good people can only vote for acceptance.
+            E.add_constraint(Gj(j) >> Mij(j, i))
+            # Spies can't vote in favor for two consecutive rounds
+            E.add_constraint(~Gj(j) >> ~(Mij(j, i) & Mij(j, i - 1)))
+            # Spies can vote to accept or reject.
+            E.add_constraint((~Gj(j) >> Mij(j, i)) | (~Gj(j) >> ~Mij(j, i)))
+            # No one can participate in more than two tasks in a row
+            E.add_constraint(~(Rij(j, i) & Rij(j, i - 1) & Rij(j, i - 2)))
+            # If the task the player is on fails, they will be suspected
+            E.add_constraint((Rij(j, i) >> ~Ki(i)) >> Sj(j))
+           
+            # At the end of rounds 6 and 12, the voted member cannot participate in the next 6 rounds of the game
+            if i == 6 or i == 12:
+                E.add_constraint(~(Rij(j, i + 1) & Rij(j, i + 2) & Rij(j, i + 3) & Rij(j, i + 4) & Rij(j, i + 5) & Rij(j, i + 6)))
+        # If the number of suspects is the same, one person will be randomly selected to vote.
+        if i == 18:
+            E.add_constraint(~(Gj(j) & Gj(j + 1)) >> (Vij(j, i) & Vij(j + 1, i)) >> F)
 if __name__ == "__main__":
 
     T = example_theory()
