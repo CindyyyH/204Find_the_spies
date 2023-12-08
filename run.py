@@ -84,11 +84,11 @@ class Vote:
 
 # Step one: initializing
 members = ['A', 'B', 'C', 'D', 'E']  
-suspicions = 0  # 初始化怀疑次数
-success_count = 0  # 任务成功次数
-i_max = 18  # 总游戏轮次
+suspicions = 0  
+success_count = 0  
+i_max = 18  # maximum round
 
-roles = {'spies': set(random.sample(members, 2)), 'good': set()}  # 随机指定两名间谍，剩下为好人
+roles = {'spies': set(random.sample(members, 2)), 'good': set()}  # randomly chooses two spies
 for member in members:
     if member not in roles['spies']:
         roles['good'].add(member)
@@ -97,17 +97,16 @@ for member in members:
 # 函数
 def number_players(i)
     if i % 2 == 1:
-        participants = random.sample(members, 3)      # 单数轮选三个
+        participants = random.sample(members, 3)      # 3 players in odd round
         return participants
     else:
-        participants = random.sample(members, 2)      # 双数轮选两个
+        participants = random.sample(members, 2)      # 2 players in even round
         return participants
 
 def vote(participants):
     votes = {'success': True}
     for member in participants:
         if member in roles['spies']:
-            # 间谍随机投票，有一定几率投反对票
             vote = random.choice([True, False])
             if not vote:
                 votes['success'] = False
@@ -121,16 +120,15 @@ def update_suspicions(participants, vote_result):
 
 def vote_out(round_number):
     if round_number in [6, 12]:
-        # 找出怀疑次数最高的成员
         most_suspected = max(suspicions, key=suspicions.get)
-        # 投票出局，无法参加接下来的6轮游戏
+        # players who get voted out cannot partcipate in next six rounds
         for i in range(1, 7):
             if round_number + i <= rounds:
                 members.remove(most_suspected)
         # print(f"Round {round_number}: Member {most_suspected} is voted out.")
 
-# 主程序
-for i in range(1, rounds + 1):      # i = 第几轮
+# Main
+for i in range(1, rounds + 1):      # i = nth round
     participants = assign_task(i)
     vote_result = vote(participants)
     update_suspicions(participants, vote_result)
@@ -138,6 +136,26 @@ for i in range(1, rounds + 1):      # i = 第几轮
         task_success_count += 1
     if round_number in [6, 12]:
         vote_out(round_number)
+
+# result
+if task_success_count > 9:
+    print("mission success, spies lose")
+else:
+    print("mission failure, spies win")
+
+# Vote out two spies based on the number of suspicions.
+sorted_suspicions = sorted(suspicions.items(), key=lambda item: item[1], reverse=True)
+suspected_spies = sorted_suspicions[:2]
+print("the most suspected member：", suspected_spies)
+
+# check if the suspected members are really spies
+actual_spies = roles['spies']
+correctly_identified_spies = all(member in actual_spies for member, _ in suspected_spies)
+if correctly_identified_spies:
+    print("spy has been voted out")
+else:
+    print("someone was mistakenly identified as spies")
+
 
 
 
